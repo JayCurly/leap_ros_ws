@@ -1,9 +1,6 @@
-import os
 from launch import LaunchDescription
-from launch.actions import ExecuteProcess, IncludeLaunchDescription, TimerAction
-from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.actions import ExecuteProcess, TimerAction
 from launch_ros.actions import Node
-from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
     sudo_password = "xuegeros"
@@ -20,26 +17,13 @@ def generate_launch_description():
         output='screen'
     )
 
-    # 3. YDLIDAR (延迟 5 秒启动，等待 /dev/lidar 生成)
-    ydlidar_launch = TimerAction(
-        period=5.0,
-        actions=[
-            IncludeLaunchDescription(
-                PythonLaunchDescriptionSource(
-                    os.path.join(get_package_share_directory('ydlidar_ros2_driver'), 'launch', 'ydlidar_launch.py')
-                )
-            )
-        ]
-    )
-
-    # 4. Xuegecar (延迟 7 秒启动，确保雷达已经占用了串口)
+    # 3. Xuegecar (延迟 7 秒启动)
     xuegecar_launch = TimerAction(
         period=7.0,
         actions=[
-            IncludeLaunchDescription(
-                PythonLaunchDescriptionSource(
-                    os.path.join(get_package_share_directory('xuegecar_bringup'), 'launch', 'xuegecar_bringup.launch.py')
-                )
+            ExecuteProcess(
+                cmd=['ros2', 'launch', 'xuegecar_bringup', 'xuegecar_bringup.launch.py'],
+                output='screen'
             )
         ]
     )
@@ -47,6 +31,5 @@ def generate_launch_description():
     return LaunchDescription([
         socat_process,
         micro_ros_agent,
-        ydlidar_launch,
         xuegecar_launch
     ])
