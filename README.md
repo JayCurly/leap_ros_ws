@@ -30,32 +30,6 @@ source install/setup.bash
 colcon build --packages-select xuegecar_description
 ```
 
-## 常用启动
-
-- 底盘启动：
-
-```bash
-ros2 launch xuegecar_bringup xuegecar_bringup.launch.py
-```
-
-- 完整演示：
-
-```bash
-ros2 launch xuegeros_demo bringup_all.launch.py
-```
-
-- 机器人模型预览：
-
-```bash
-ros2 launch xuegecar_description display.launch.py
-```
-
-- 摄像头流发布：
-
-```bash
-ros2 launch xuegecar_camera http_video_publisher.launch.py
-```
-
 ## 说明
 
 - 当前使用的机器人描述文件是 `xuegecar_description/urdf/leap_ros.urdf`。
