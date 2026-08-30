@@ -1,22 +1,22 @@
 # leap_ros_ws
 
-ROS 2 workspace for the xuegecar / leap_ros robot stack.
+leap_ros 的 ROS 2 工作空间。
 
-## Workspace packages
+## 工作空间包
 
-- `camsense_lidar`: serial lidar driver.
-- `leap_interfaces`: shared interfaces.
-- `openslam_gmapping`: upstream gmapping sources.
-- `slam_gmapping`: ROS 2 wrapper for gmapping.
-- `xuegecar_bringup`: robot bringup node and launch files.
-- `xuegecar_camera`: HTTP/MJPEG camera stream publisher.
-- `xuegecar_cartographer`: Cartographer-related package.
-- `xuegecar_description`: URDF, meshes, and RViz assets.
-- `xuegecar_mavlink_bridge`: MAVLink bridge package.
-- `xuegecar_navigation2`: Nav2 configs and maps.
-- `xuegeros_demo`: combined demo launch files.
+- `camsense_lidar`：串口雷达驱动。
+- `leap_interfaces`：公共接口。
+- `openslam_gmapping`：上游 gmapping 源码。
+- `slam_gmapping`：gmapping 的 ROS 2 封装。
+- `xuegecar_bringup`：底盘 bringup 节点和启动文件。
+- `xuegecar_camera`：HTTP/MJPEG 摄像头流发布节点。
+- `xuegecar_cartographer`：Cartographer 相关包。
+- `xuegecar_description`：URDF、模型和 RViz 资源。
+- `xuegecar_mavlink_bridge`：MAVLink 桥接包。
+- `xuegecar_navigation2`：Nav2 配置和地图。
+- `xuegeros_demo`：综合演示启动文件。
 
-## Build
+## 构建
 
 ```bash
 cd ~/leap_ros_ws
@@ -24,40 +24,40 @@ colcon build
 source install/setup.bash
 ```
 
-Build a single package if needed:
+只构建单个包：
 
 ```bash
 colcon build --packages-select xuegecar_description
 ```
 
-## Main launch files
+## 常用启动
 
-- Robot bringup:
+- 底盘启动：
 
 ```bash
 ros2 launch xuegecar_bringup xuegecar_bringup.launch.py
 ```
 
-- Full demo:
+- 完整演示：
 
 ```bash
 ros2 launch xuegeros_demo bringup_all.launch.py
 ```
 
-- Robot model preview:
+- 机器人模型预览：
 
 ```bash
 ros2 launch xuegecar_description display.launch.py
 ```
 
-- Camera stream node:
+- 摄像头流发布：
 
 ```bash
 ros2 launch xuegecar_camera http_video_publisher.launch.py
 ```
 
-## Notes
+## 说明
 
-- The active robot description is `xuegecar_description/urdf/leap_ros.urdf`.
-- Visual assets are stored in `xuegecar_description/meshes/`.
-- Navigation maps are stored in `xuegecar_navigation2/maps/`.
+- 当前使用的机器人描述文件是 `xuegecar_description/urdf/leap_ros.urdf`。
+- 视觉资源位于 `xuegecar_description/meshes/`。
+- 导航地图位于 `xuegecar_navigation2/maps/`。
