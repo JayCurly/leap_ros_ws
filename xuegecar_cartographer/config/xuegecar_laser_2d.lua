@@ -6,18 +6,22 @@ options = {
   map_builder = MAP_BUILDER,
   trajectory_builder = TRAJECTORY_BUILDER,
   map_frame = "map",
-  tracking_frame = "laser_frame",
-  published_frame = "laser_frame",
-  -- tracking_frame = "horizontal_laser_link",
-  -- published_frame = "horizontal_laser_link",
+  -- 【我】10.5 改：tracking 用地面投影帧——2D 模式 z 恒 0，地图平面=tracking_frame 高度；
+  -- 填 laser_frame 时地图贴在雷达高度（车沉到地下），填 base_footprint 地图平面才是地面（车轮着地）。
+  -- scan 数据 cartographer 会自己查 base_footprint→laser_frame 静态变换（z=0.126）换算，2D 投影无精度损失
+  tracking_frame = "base_footprint",
+  -- provide_odom_frame=false 时 cartographer 只发一条 map→published_frame 边，
+  -- 想让它发 map→odom（odom→base_footprint 交给 bringup），published_frame 必须填 "odom"
+  -- （第一次错填 base_footprint 导致 base_footprint 双父、TF 断成两棵树）
+  published_frame = "odom",
   odom_frame = "odom",
-  -- true改为false，不用提供里程计数据
-  provide_odom_frame = true,
-  -- false改为true，仅发布2D位资
+  -- 【我】10.5 改 false：odom→base_footprint 交给 bringup 发，cartographer 只发 map→odom（回环修正）
+  provide_odom_frame = false,
   publish_frame_projected_to_2d = false,
   use_pose_extrapolator = true,
-  -- false改为true，使用里程计数据
-  use_odometry = false,
+  -- 【我】10.5 改 true：订阅 /odom 做帧间运动先验；标准链 map→odom→bf→base_link→laser 每条边唯一发布者
+  -- 时钟体检通过：ESP32 戳落后 VM 仅 ~13ms(/odom)/26ms(/scan)，TF 1000Hz 历史插值可覆盖
+  use_odometry = true,
   use_nav_sat = false,
   use_landmarks = false,
   -- 0改为1,使用一个雷达
