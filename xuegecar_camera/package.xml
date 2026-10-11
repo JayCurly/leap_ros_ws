@@ -7,8 +7,10 @@
   <maintainer email="xuegeros@todo.todo">xuegeros</maintainer>
   <license>MIT</license>
 
+  <!-- 【我】构建工具：ament_python（纯 Python 包）；C++ 包这里写 ament_cmake -->
   <buildtool_depend>ament_python</buildtool_depend>
 
+  <!-- 【我】exec_depend：运行期依赖。rosdep/colcon 会据此检查装没装 -->
   <exec_depend>launch</exec_depend>
   <exec_depend>launch_ros</exec_depend>
   <exec_depend>python3-opencv</exec_depend>
@@ -24,6 +26,7 @@
   <test_depend>python3-pytest</test_depend>
 
   <export>
+    <!-- 【我】关键一行：声明这是 ament_python 包，colcon 据此走 Python 构建路径 -->
     <build_type>ament_python</build_type>
   </export>
 </package>

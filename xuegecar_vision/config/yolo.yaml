@@ -1,0 +1,6 @@
+yolo_detector:
+  ros__parameters:
+    model_path: "/home/jay/leap_ros/yolov8n.pt"
+    image_topic: "/camera/image_raw/compressed"
+    conf: 0.25
+    publish_debug: true
