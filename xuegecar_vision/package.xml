@@ -17,6 +17,7 @@
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>vision_msgs</exec_depend>
+  <exec_depend>visualization_msgs</exec_depend>
   <exec_depend>xuegecar_camera</exec_depend>
 
   <!-- 【我】ultralytics/torch 由 pip 安装，无对应 apt/ros 包，不在此声明；

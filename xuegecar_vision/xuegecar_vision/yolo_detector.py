@@ -90,7 +90,7 @@ class YoloDetector(Node):
 
         # 【我】② 组装 Detection2DArray
         arr = Detection2DArray()
-        arr.header = msg.header  # Q5：整个抄图像 header（stamp=拍摄时刻, frame_id=camera_link）
+        arr.header = msg.header  # Q5：整个抄图像 header（stamp=拍摄时刻, frame_id=camera_optical_link）
 
         debug_frame = frame.copy() if self.debug_pub is not None else None
 

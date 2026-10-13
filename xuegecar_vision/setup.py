@@ -26,6 +26,8 @@ setup(
         "console_scripts": [
             # 【我】可执行名 yolo_detector → ros2 run xuegecar_vision yolo_detector
             "yolo_detector = xuegecar_vision.yolo_detector:main",
+            # 【我】M3：Detection2DArray → MarkerArray 投影节点
+            "detection_marker = xuegecar_vision.detection_marker:main",
         ],
     },
 )

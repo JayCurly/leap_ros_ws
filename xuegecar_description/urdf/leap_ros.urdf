@@ -171,6 +171,17 @@
     <origin xyz="0.047716 -0.000603 0.052408" rpy="0 0 0"/>
   </joint>
 
+  <!-- 【我】REP 103 光学帧：相机图像数据的数学坐标系（z前/x右/y下），
+       与描述零件安装位姿的 camera_link（x前/y左/z上）区分开。
+       rpy="-pi/2 0 -pi/2" 是机器人系→光学系的标准固定旋转，
+       针孔投影出的 3D 点直接发在这个帧，旋转变换交给 TF，节点代码零矩阵。 -->
+  <link name="camera_optical_link"/>
+  <joint name="camera_optical_joint" type="fixed">
+    <parent link="camera_link"/>
+    <child link="camera_optical_link"/>
+    <origin xyz="0 0 0" rpy="-1.57079632679 0 -1.57079632679"/>
+  </joint>
+
   <link name="ultrasonic_link">
     <visual>
       <origin xyz="-0.040401 0 -0.0215" rpy="0 0 1.57079632679"/>

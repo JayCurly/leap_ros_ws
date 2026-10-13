@@ -4,3 +4,24 @@ yolo_detector:
     image_topic: "/camera/image_raw/compressed"
     conf: 0.25
     publish_debug: true
+
+# 【我】M3 投影节点参数（节点名必须与 yaml 顶层 key 一致）
+detection_marker:
+  ros__parameters:
+    detections_topic: "/detections"
+    marker_topic: "/detection_markers"
+    # 实际拉流分辨率 800x600（固件 VGA 640x480 经模块 MJPEG 重采样）
+    image_width: 800
+    image_height: 600
+    # 内参为 FOV 反推近似值（hfov≈60°，方形像素）：fx=(W/2)/tan(30°)≈693
+    # 正式值需用 ros2 run camera_calibration cameracalibrator 棋盘格标定
+    fx: 693.0
+    fy: 693.0
+    cx: 400.0
+    cy: 300.0
+    # 单目无深度：所有目标先钉在 1m 平面上，只保证方位准确，距离是假设值
+    fixed_depth: 1.0
+    # 检测 ~11Hz，0.5s 内必有更新；走出画面的目标 0.5s 后自动从 RViz 消失
+    marker_lifetime: 0.5
+    line_width: 0.01
+    text_height: 0.08

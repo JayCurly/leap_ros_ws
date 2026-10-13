@@ -3,7 +3,9 @@ http_video_publisher:
     url: "http://10.211.32.215:81/"
     topic: "/camera/image_raw/compressed"
     raw_topic: "/camera/image_raw"
-    frame_id: "camera_link"
+    # 【我】REP 103：图像数据的 frame_id 必须指向光学帧（z前/x右/y下），
+    # 不是描述零件安装位姿的 camera_link；URDF 里有 camera_optical_joint 负责两者变换
+    frame_id: "camera_optical_link"
     fps: 20.0
     reconnect_delay: 2.0
     use_ffmpeg: true
