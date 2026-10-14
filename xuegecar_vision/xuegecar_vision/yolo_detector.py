@@ -20,6 +20,7 @@
 import numpy as np
 import cv2
 import rclpy
+from rcl_interfaces.msg import SetParametersResult
 from rclpy.node import Node
 from rclpy.qos import HistoryPolicy
 from rclpy.qos import QoSProfile
@@ -45,6 +46,9 @@ class YoloDetector(Node):
         self.image_topic = self.get_parameter("image_topic").value
         self.conf = float(self.get_parameter("conf").value)
         self.publish_debug = bool(self.get_parameter("publish_debug").value)
+
+        # 【我】参数热更新回调：ros2 param set 时即时生效，不必重启节点
+        self.add_on_set_parameters_callback(self.on_set_parameters)
 
         # 【我】模型在节点启动时一次性加载（加载要几秒），之后每帧只做推理
         self.model = YOLO(model_path)
@@ -74,6 +78,14 @@ class YoloDetector(Node):
             f"YOLO 检测就绪: model={model_path}, conf={self.conf}, "
             f"订阅 {self.image_topic} → /detections"
         )
+
+    def on_set_parameters(self, params):
+        # 【我】只处理 conf：改完立刻影响下一帧推理的阈值
+        for p in params:
+            if p.name == "conf":
+                self.conf = float(p.value)
+                self.get_logger().info(f"conf 热更新 → {self.conf}")
+        return SetParametersResult(successful=True)
 
     def on_image(self, msg):
         # 【我】① Q4 解码：jpeg 字节 → 一维 uint8 数组 → BGR 图像
