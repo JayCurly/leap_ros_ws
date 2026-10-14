@@ -1,0 +1,15 @@
+# ===== colcon / ROS2 编译产物（锚定根目录，避免误伤 openslam_gmapping/build_tools）=====
+/build/
+/install/
+/log/
+
+# ===== Python 产物 =====
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# ===== 编辑器 / 系统 =====
+.vscode/
+.DS_Store
+*.swp
+*~
