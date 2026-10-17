@@ -1,0 +1,17 @@
+# 【我】10.17 safety_stop 安全闸门参数（节点名必须与顶层 key 一致）
+# 方案详见 week6.md 10.16：Nav2 出口改道 /cmd_vel_raw，固件仍订阅 /cmd_vel
+safety_stop:
+  ros__parameters:
+    raw_cmd_topic: "/cmd_vel_raw"   # Nav2/teleop 的原始速度入口
+    cmd_topic: "/cmd_vel"           # 给固件的唯一安全出口
+    detections_topic: "/detections"
+    ultrasonic_topic: "/ultrasonic"
+    target_class: "person"
+    image_width: 800
+    image_height: 600
+    area_ratio: 0.10                # 框面积/画面面积（48000px²@800x600）
+    dist_threshold: 0.6             # 超声波距离阈值（米）
+    trigger_frames: 3               # 连续 3 帧≈0.3s 双条件命中才停
+    recover_frames: 10              # 连续 10 帧≈1s 安全才恢复（迟滞）
+    gate_hz: 10.0                   # 闸门/零速发布频率，与 Nav2 10Hz 对齐
+    cmd_timeout: 0.5                # 原始速度超时秒数，超时发零（上位机看门狗）
