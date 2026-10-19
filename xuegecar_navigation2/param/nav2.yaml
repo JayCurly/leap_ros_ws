@@ -82,9 +82,8 @@ bt_navigator_rclcpp_node:
 controller_server:
   ros__parameters:
     use_sim_time: False
-    # 【我】10.17 联动改道：Nav2 速度出口改到 /cmd_vel_raw，经 safety_stop 闸门后才到 /cmd_vel(固件)
-    # 回退：删除本行（恢复默认 cmd_vel）且不启动 safety_stop 即可
-    cmd_vel_topic: "/cmd_vel_raw"
+    # 【我】10.19 勘误：Humble 的 controller_server 没有 cmd_vel_topic 参数，此行无效（本文件亦未被任何 launch 引用）。
+    # 速度改道在 launch remap 实现：xuegecar_navigation_launch.py（cmd_vel→cmd_vel_raw）
     controller_frequency: 10.0
     min_x_velocity_threshold: 0.001
     min_y_velocity_threshold: 0.5

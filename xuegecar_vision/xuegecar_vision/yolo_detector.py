@@ -102,7 +102,11 @@ class YoloDetector(Node):
 
         # 【我】② 组装 Detection2DArray
         arr = Detection2DArray()
-        arr.header = msg.header  # Q5：整个抄图像 header（stamp=拍摄时刻, frame_id=camera_optical_link）
+        # 【我】10.18 修复：stamp 用发布时刻而非拍摄时刻。
+        # 拍摄时刻会把 CPU 推理延迟算进"年龄"，导致 safety_stop 新鲜度看门狗误判过期。
+        # 检测结果的有效时刻 = 产出时刻；frame_id 仍沿用相机坐标系。
+        arr.header.frame_id = msg.header.frame_id
+        arr.header.stamp = self.get_clock().now().to_msg()
 
         debug_frame = frame.copy() if self.debug_pub is not None else None
 

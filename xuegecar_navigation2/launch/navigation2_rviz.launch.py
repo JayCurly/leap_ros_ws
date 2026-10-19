@@ -23,8 +23,9 @@ def generate_launch_description():
         DeclareLaunchArgument('map',default_value=map_yaml_path,description='Full path to map file to load'),
         DeclareLaunchArgument('params_file',default_value=nav2_param_path,description='Full path to param file to load'),
 
+        # 【我】10.19 改用本包 bringup fork：navigation 速度出口 remap 到 /cmd_vel_raw（见人停闸门）
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource([nav2_bringup_dir,'/launch','/bringup_launch.py']),
+            PythonLaunchDescriptionSource([xuegecar_navigation2_dir,'/launch','/xuegecar_bringup.launch.py']),
             launch_arguments={
                 'map': map_yaml_path,
                 'use_sim_time': use_sim_time,
