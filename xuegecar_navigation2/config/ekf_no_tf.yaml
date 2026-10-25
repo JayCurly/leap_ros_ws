@@ -1,5 +1,7 @@
 ### EKF 实验专用配置（不发 TF，避免与 bringup 冲突）###
-ekf_filter_node:
+# 【我】根键用 /**：实验要同时起两个 EKF 实例，用 -r __node:=ekf_a 改名后
+# 若根键写成 ekf_filter_node 就会不匹配、参数被静默忽略
+/**:
     ros__parameters:
         frequency: 30.0
         two_d_mode: false

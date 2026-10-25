@@ -1,0 +1,41 @@
+### EKF 改进配置：不融 odom 的位置/角速度，航向交给去偏后的陀螺 ###
+### 和 ekf_no_tf.yaml 的唯一区别：那边把 odom 的 x/y 当绝对位置量测、yaw 角速度也来自轮速，
+### 结果 EKF 被 odom 的滑差航向钉死；这里只融 vx（前进速度）+ IMU 去偏后的 yaw 角速度。
+# 【我】根键用 /** 而不是 ekf_filter_node：实验要同时起两个 EKF 实例，
+# 用 -r __node:=ekf_b 改名后根键若不匹配，参数会被静默忽略（踩过的坑）
+/**:
+    ros__parameters:
+        frequency: 30.0
+        # 【我】地面机器人二维化：z / roll / pitch 及其速度强制为 0，减少自由度
+        two_d_mode: true
+        publish_acceleration: false
+        # 【我】实验对比用：不发 TF，否则与 bringup 的 odom→base_footprint 冲突
+        publish_tf: false
+
+        map_frame: map
+        odom_frame: odom
+        base_link_frame: base_link
+        world_frame: odom
+
+        # 【我】轮式里程计只取 vx：位置(x/y/z)和 yaw 角速度一律不融
+        # 原因：轮子打滑 0.46% 让 odom 航向以 2.1°/m 累积假转向，一旦当绝对量测就会污染 EKF
+        odom0: /odom
+        odom0_config: [false, false, false,
+                       false, false, false,
+                       true,  false, false,
+                       false, false, false,
+                       false, false, false]
+        odom0_differential: false
+        odom0_relative: false
+
+        # 【我】IMU 只取 yaw 角速度，且必须接 imu_debias.py 输出的 /imu_debiased
+        # 不取姿态角：固件 orientation 漂移速率是零偏的 5.8 倍，不可信
+        imu0: /imu_debiased
+        imu0_config: [false, false, false,
+                      false, false, false,
+                      false, false, false,
+                      false, false, true,
+                      false, false, false]
+        imu0_differential: false
+        imu0_relative: false
+        imu0_remove_gravitational_acceleration: false
