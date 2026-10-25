@@ -13,3 +13,6 @@ __pycache__/
 .DS_Store
 *.swp
 *~
+
+# ===== rosbag 录制产物（实验包体积大，不入库）=====
+ekf_exp*/
