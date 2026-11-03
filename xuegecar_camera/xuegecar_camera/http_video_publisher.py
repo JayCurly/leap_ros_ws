@@ -54,7 +54,7 @@ class HttpVideoPublisher(Node):
             raise ValueError("Parameter 'url' must be set in the camera YAML file.")
         self.jpeg_quality = max(1, min(100, self.jpeg_quality))  # 钳到合法范围 1-100
 
-        # 【我】线程模型核心状态（Q2 的答案都在这几个变量上）：
+        # 【我】线程模型核心状态：
         #   capture        当前视频捕获对象（cv2.VideoCapture）
         #   stop_event     线程停止信号（节点销毁时通知后台线程退出）
         #   frame_lock     锁：保护 latest_frame 不被两个线程同时读写
@@ -70,7 +70,7 @@ class HttpVideoPublisher(Node):
         self.last_frame_time = 0.0
         self.frame_period = 1.0 / self.fps if self.fps > 0.0 else 0.0  # 发布间隔上限
 
-        # 【我】Q3 答案在这里：视频用 KEEP_LAST + depth=1 + BEST_EFFORT
+        # 【我】视频流 QoS：KEEP_LAST + depth=1 + BEST_EFFORT
         #   depth=1：只留最新一帧，旧帧直接丢（视频宁可丢帧也不要积压延迟）
         #   BEST_EFFORT：不保证送达，UDP 丢包不重传——视频流丢一帧无感，
         #   重传反而会把延迟的雪球滚大。代价：订阅端 QoS 必须兼容（也要 BEST_EFFORT）
@@ -80,7 +80,7 @@ class HttpVideoPublisher(Node):
             reliability=ReliabilityPolicy.BEST_EFFORT,
         )
         self.publisher = self.create_publisher(CompressedImage, self.topic, video_qos)
-        # 【我】publish_raw 开关：True 才额外发未压缩的 Image（调试/省事用，默认关省带宽）
+        # 【我】publish_raw 开关：True 才额外发未压缩的 Image（调试用途，默认关闭以节省带宽）
         self.raw_publisher = (
             self.create_publisher(Image, self.raw_topic, video_qos)
             if self.publish_raw and self.raw_topic
@@ -90,7 +90,7 @@ class HttpVideoPublisher(Node):
         # 但真正的限速由 L122 的 frame_period 比较完成（timer tick 快≠发布快）
         timer_period = 0.005 if self.frame_period <= 0.0 else min(0.005, self.frame_period)
         self.timer = self.create_timer(timer_period, self.publish_next_frame)
-        # 【我】Q2 关键：拉流循环放【后台线程】，daemon=True 表示主线程退出时它跟着死
+        # 【我】拉流循环必须放【后台线程】：daemon=True 表示主线程退出时它跟着退出
         self.capture_thread = threading.Thread(target=self.capture_loop, daemon=True)
         self.capture_thread.start()
 
@@ -149,10 +149,10 @@ class HttpVideoPublisher(Node):
     def publish_next_frame(self):
         """【我】timer 回调：spin 里每 5ms 调用一次，负责限速+编码+发布
 
-        为什么不在这里 capture.read()？（Q2 核心）
+        为什么不在这里 capture.read()？
         read() 是阻塞 IO——网络流等下一帧可能卡几十 ms。
         timer 回调阻塞 = 整个 spin 的事件循环被卡住，
-        节点里其他 timer/subscription 全部跟着饿死。
+        节点里其他 timer/subscription 全部无法执行。
         所以拆分：后台线程专职阻塞拉帧，timer 回调只做"有就拿，没有就走"。
         """
         now = time.monotonic()
@@ -163,13 +163,13 @@ class HttpVideoPublisher(Node):
         with self.frame_lock:
             frame = self.latest_frame
             frame_seq = self.latest_frame_seq
-        # 【我】Q2 两个 seq 的作用：frame_seq == published_frame_seq 说明
+        # 【我】两个 seq 的作用：frame_seq == published_frame_seq 说明
         # 这帧已经发过了（拉流 fps 低于发布 tick 时会反复命中），直接跳过，
-        # 防止同一帧被重复发布刷爆订阅端
+        # 防止同一帧被重复发布
         if frame is None or frame_seq == self.published_frame_seq:
             return
 
-        # 【我】Q4 的逆操作：numpy 图像 → jpeg 字节（下游用 imdecode 还原）
+        # 【我】编码：numpy 图像 → jpeg 字节（下游用 imdecode 还原）
         ok, encoded = cv2.imencode(
             ".jpg",
             frame,
@@ -217,7 +217,7 @@ class HttpVideoPublisher(Node):
 
 
 def main(args=None):
-    # 【我】Q1 的 entry point 本体：setup.py 里 :main 指向的就是这个函数
+    # 【我】entry point 本体：setup.py 里 :main 指向的就是这个函数
     rclpy.init(args=args)
     node = HttpVideoPublisher()
     try:

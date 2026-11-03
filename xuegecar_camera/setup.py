@@ -27,7 +27,7 @@ setup(
     description="ROS2 HTTP video stream publisher for xuegecar.",
     license="MIT",
     tests_require=["pytest"],
-    # 【我】Q1 答案本体：console_scripts 三段的含义
+    # 【我】entry point 注册：console_scripts 三段的含义
     #   "可执行名 = 包名.模块文件名:入口函数名"
     #   colcon build 后 setuptools 在 install/.../lib/包名/ 下生成同名引导脚本，
     #   ros2 run xuegecar_camera http_video_publisher → 执行 shim → import 模块 → 调 main()

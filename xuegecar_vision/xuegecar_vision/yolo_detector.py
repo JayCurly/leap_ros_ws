@@ -90,7 +90,7 @@ class YoloDetector(Node):
         return SetParametersResult(successful=True)
 
     def on_image(self, msg):
-        # 【我】① Q4 解码：jpeg 字节 → 一维 uint8 数组 → BGR 图像
+        # 【我】① 解码：jpeg 字节 → 一维 uint8 数组 → BGR 图像
         frame = cv2.imdecode(
             np.frombuffer(msg.data, dtype=np.uint8), cv2.IMREAD_COLOR
         )
@@ -120,12 +120,12 @@ class YoloDetector(Node):
 
             det = Detection2D()
             det.header = msg.header
-            # 【我】10.9 Q4 公式：两角 → 中心点+宽高
+            # 【我】两角坐标 → 中心点 + 宽高
             det.bbox.center.position.x = (x1 + x2) / 2.0
             det.bbox.center.position.y = (y1 + y2) / 2.0
             det.bbox.size_x = float(x2 - x1)
             det.bbox.size_y = float(y2 - y1)
-            # 【我】Q3：YOLO 单类别，results 只填 1 个最佳假设
+            # 【我】YOLO 单类别，results 只填 1 个最佳假设
             hyp = ObjectHypothesisWithPose()
             hyp.hypothesis.class_id = name
             hyp.hypothesis.score = score
@@ -137,7 +137,7 @@ class YoloDetector(Node):
 
         self.det_pub.publish(arr)
 
-        # 【我】③ 发画框调试图（header 同样抄原图）
+        # 【我】③ 发画框调试图（header 沿用原图时间戳）
         if debug_frame is not None:
             ok, encoded = cv2.imencode(".jpg", debug_frame)
             if ok:

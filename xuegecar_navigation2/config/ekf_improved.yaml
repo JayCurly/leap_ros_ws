@@ -2,7 +2,7 @@
 ### 和 ekf_no_tf.yaml 的唯一区别：那边把 odom 的 x/y 当绝对位置量测、yaw 角速度也来自轮速，
 ### 结果 EKF 被 odom 的滑差航向钉死；这里只融 vx（前进速度）+ IMU 去偏后的 yaw 角速度。
 # 【我】根键用 /** 而不是 ekf_filter_node：实验要同时起两个 EKF 实例，
-# 用 -r __node:=ekf_b 改名后根键若不匹配，参数会被静默忽略（踩过的坑）
+# 用 -r __node:=ekf_b 改名后根键若不匹配，参数会被静默忽略
 /**:
     ros__parameters:
         frequency: 30.0

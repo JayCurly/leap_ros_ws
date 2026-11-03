@@ -5,7 +5,7 @@ yolo_detector:
     conf: 0.25
     publish_debug: true
 
-# 【我】M3 投影节点参数（节点名必须与 yaml 顶层 key 一致）
+# 【我】检测投影节点参数（节点名必须与 yaml 顶层 key 一致）
 detection_marker:
   ros__parameters:
     detections_topic: "/detections"

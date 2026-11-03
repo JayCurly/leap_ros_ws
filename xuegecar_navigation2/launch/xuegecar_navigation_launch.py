@@ -14,7 +14,7 @@
 
 """【我】10.19 fork 自 nav2_bringup/navigation_launch.py（Humble），仅改速度出口 remap。
 
-为什么 fork（见 week6.md 10.19）：
+为什么 fork：
     Humble 的 controller_server / velocity_smoother / behavior_server 都没有
     cmd_vel 话题参数，yaml 写 cmd_vel_topic 会被静默忽略；vendor launch 又把
     两个出口都 remap 到 /cmd_vel。见人停安全闸门（safety_stop）要求自己成为

@@ -27,7 +27,7 @@ def generate_launch_description():
         parameters=[os.path.join(vision_dir, "config", "yolo.yaml")],
     )
 
-    # 【我】M3：检测框 → 3D MarkerArray 投影节点；
+    # 【我】检测框 → 3D MarkerArray 投影节点；
     # 同一个 yolo.yaml 里有 yolo_detector/detection_marker 两段，
     # ROS2 按节点名各取各的段，互不干扰
     marker_node = Node(

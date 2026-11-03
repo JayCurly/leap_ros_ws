@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""detection_marker.py —— 把 2D 检测框投影成 RViz 里的 3D Marker（M3）
+"""detection_marker.py —— 把 2D 检测框投影成 RViz 里的 3D Marker
 
 数据流：
     /detections (Detection2DArray, RELIABLE)
@@ -18,12 +18,12 @@
     光学系→机器人系→map 的旋转平移全部由 TF 链完成（URDF camera_optical_joint
     + RViz 自动查链），本节点一个旋转矩阵都不写。
 
-单目无深度的处理（10.11 Q3 方案一）：
+单目无深度的处理（方案一）：
     所有目标假设在 fixed_depth（默认 1m）深的平面上。方向（左/右/上/下）准确，
-    距离是假的——M3 只做可视化，不做测量。后续"检测到 person 就停"联动
+    距离为近似值——本节点只做可视化，不做测量。后续"检测到 person 就停"联动
     可改用 /scan 在对应方位角的射线距离替换固定 Z。
 
-Marker 消失机制（10.11 Q5）：
+Marker 消失机制：
     每个 Marker 带 lifetime=0.5s，检测频率 ~11Hz 会持续刷新保质期；
     目标走出画面后不再重发，RViz 倒计时结束自动删除，无需手动发 DELETE。
 """
@@ -64,7 +64,7 @@ class DetectionMarker(Node):
     def __init__(self):
         super().__init__("detection_marker")
 
-        # 【我】内参（10.11 Q2 路线A：FOV 反推的近似值，非标定结果）
+        # 【我】内参（FOV 反推的近似值，非标定结果）
         #   fx = (W/2) / tan(hfov/2)，800x600 + hfov≈60° → fx≈693
         #   cx/cy 主点近似图像中心；正式做法是 camera_calibration 棋盘格标定
         self.declare_parameter("detections_topic", "/detections")
@@ -75,7 +75,7 @@ class DetectionMarker(Node):
         self.declare_parameter("fy", 693.0)
         self.declare_parameter("cx", 400.0)
         self.declare_parameter("cy", 300.0)
-        # 【我】Q3：单目没深度，所有目标先钉在这个深度（米）上
+        # 【我】单目没有深度，所有目标先固定在这个深度（米）
         self.declare_parameter("fixed_depth", 1.0)
         self.declare_parameter("marker_lifetime", 0.5)
         self.declare_parameter("line_width", 0.01)
@@ -107,7 +107,7 @@ class DetectionMarker(Node):
         )
 
     def project(self, u, v, z):
-        """【我】Q1 针孔公式：像素 (u,v) + 假设深度 Z → 光学系 3D 点"""
+        """【我】针孔公式：像素 (u,v) + 假设深度 Z → 光学系 3D 点"""
         return Point(
             x=(u - self.cx) * z / self.fx,
             y=(v - self.cy) * z / self.fy,  # 图像 y 向下 → 光学系 y 也向下，直接对应
@@ -115,7 +115,7 @@ class DetectionMarker(Node):
         )
 
     def on_detections(self, msg):
-        # 【我】header 整个抄检测消息：frame_id=camera_optical_link，stamp=图像拍摄时刻
+        # 【我】header 沿用检测消息：frame_id=camera_optical_link，stamp=图像拍摄时刻
         frame_id = msg.header.frame_id
         stamp = msg.header.stamp
         # 【我】rclpy Duration(seconds=) → builtin_interfaces/Duration 消息；

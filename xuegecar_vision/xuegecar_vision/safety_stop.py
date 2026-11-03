@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""safety_stop.py —— M4「见人停」安全闸门节点（10.17）
+"""safety_stop.py —— 「见人停」安全闸门节点（10.17）
 
-【我】拓扑（详见 week6.md 10.16，固件零改动）：
+【我】拓扑（固件零改动）：
     Nav2 controller_server ──/cmd_vel_raw──┐
     teleop(可选) ───────────/cmd_vel_raw──┤
                                            ├─▶ safety_stop ──/cmd_vel──▶ leap_low_driver(车)
@@ -43,7 +43,7 @@ class SafetyStop(Node):
         self.declare_parameter("cmd_topic", "/cmd_vel")
         self.declare_parameter("detections_topic", "/detections")
         self.declare_parameter("ultrasonic_topic", "/ultrasonic")
-        # 【我】判定参数（初值见 week6.md 10.16，实车再调）
+        # 【我】判定参数（初值为经验值，实车可调）
         self.declare_parameter("target_class", "person")
         self.declare_parameter("image_width", 800)
         self.declare_parameter("image_height", 600)

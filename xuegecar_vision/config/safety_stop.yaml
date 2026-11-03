@@ -1,5 +1,5 @@
 # 【我】10.17 safety_stop 安全闸门参数（节点名必须与顶层 key 一致）
-# 方案详见 week6.md 10.16：Nav2 出口改道 /cmd_vel_raw，固件仍订阅 /cmd_vel
+# 方案：Nav2 出口改道 /cmd_vel_raw，固件仍订阅 /cmd_vel
 safety_stop:
   ros__parameters:
     raw_cmd_topic: "/cmd_vel_raw"   # Nav2/teleop 的原始速度入口
