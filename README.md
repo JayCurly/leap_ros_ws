@@ -115,7 +115,12 @@ ros2 launch xuegecar_navigation2 navigation2.launch.py
 
 ## 演示
 
-> 🎬 实车演示视频：待补充
+🎬 **实车演示视频（B 站，无声字幕版）**：<https://www.bilibili.com/video/BV1LZ4g6tEjC>
+
+- 0:00–0:20 三终端 + YOLOv8 检测画面
+- 0:20–0:48 Nav2 导航 → 行人进入 0.6 m → 安全闸门 3 帧确认刹停
+- 0:48–1:00 行人离开 10 帧迟滞恢复 → 到达目标
+
 > 📷 实物照片：待补充
 
 ## 作者
