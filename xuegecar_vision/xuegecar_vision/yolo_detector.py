@@ -65,10 +65,12 @@ class YoloDetector(Node):
 
         # 【我】检测结果：低频小消息、下游一帧不想丢 → 默认 RELIABLE + depth=10
         self.det_pub = self.create_publisher(Detection2DArray, "/detections", 10)
-        # 【我】画框调试图：视频类消息，沿用 BEST_EFFORT
+        # 【我】画框调试图：低频小消息，用默认 RELIABLE(depth=10)。
+        # 不能用 video_qos(BEST_EFFORT)：RViz/rqt 的订阅端是 RELIABLE，
+        # QoS 不兼容时连接不建立，表现为"不报错但没图像"。
         self.debug_pub = (
             self.create_publisher(
-                CompressedImage, "/detections_debug/image_raw/compressed", video_qos
+                CompressedImage, "/detections_debug/image_raw/compressed", 10
             )
             if self.publish_debug
             else None
