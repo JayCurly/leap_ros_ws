@@ -120,4 +120,4 @@ ros2 launch xuegecar_navigation2 navigation2.launch.py
 
 ## 作者
 
-汪勇 — 机器人工程专业本科生，ROS 2 开发者。
+Jay Curly | 机器人爱好者
